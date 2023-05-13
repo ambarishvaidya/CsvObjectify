@@ -1,0 +1,21 @@
+﻿RollNo,FirstName,LastName,Sex,DateOfBirth,Allergies
+1001,John,Doe,Male,15-January-2000,Peanuts
+1002,Jane,Smith,Female,22-March-2001,Dairy
+1003,Michael,Johnson,Male,10-December-1999,None
+1004,Emily,Williams,Female,05-May-2002,Eggs
+1005,David,Brown,Male,19-October-2001,None
+1006,Sarah,Anderson,Female,25-April-2000,Gluten
+1007,James,Miller,Male,09-February-2002,None
+1008,Lisa,Thompson,Female,12-July-2001,None
+1009,Robert,Clark,Male,27-November-1999,Shellfish
+1010,Michelle,Turner,Female,14-August-2000,None
+1011,Andrew,Harris,Male,01-June-2002,Soy
+1012,Olivia,Lewis,Female,18-September-2001,None
+1013,Matthew,Young,Male,03-April-2000,Tree nuts
+1014,Ava,Hall,Female,20-December-1999,Peas
+1015,Daniel,King,Male,05-July-2001,None
+1016,Grace,Scott,Female,12-May-2002,Strawberries
+1017,Joseph,Green,Male,19-October-2000,None
+1018,Chloe,Adams,Female,23-February-2001,None
+1019,William,Baker,Male,07-November-1999,Milk
+1020,Sophia,Wright,Female,15-January-2000,None
