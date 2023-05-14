@@ -6,18 +6,20 @@ namespace CsvObjectify
     public class CsvProfile
     {
         private CsvProfile() { }
-        private CsvProfile(string filePath, ColumnMetadata[] colMetadata, bool isFirstRowHeader)
+        private CsvProfile(string filePath, ColumnMetadata[] colMetadata, bool isFirstRowHeader, string delimiter)
         {
             FilePath = filePath;
             ColumnMetadata = colMetadata;
             IsFirstRowHeader = isFirstRowHeader;
+            Delimiter = delimiter;
         }
 
         public ColumnMetadata[] ColumnMetadata { get; init; }
         public string FilePath { get; init; }
         public bool IsFirstRowHeader { get; init; }
+        public string Delimiter { get; init; }
 
-        public static CsvProfile Build(string filePath, ColumnMetadata[] colMetadata, bool isFirstRowHeader)
+        public static CsvProfile Build(string filePath, ColumnMetadata[] colMetadata, bool isFirstRowHeader, string delimiter = ",")
         {
             filePath = filePath?.Trim();
 
@@ -25,7 +27,7 @@ namespace CsvObjectify
             UpdateMetaDataWithColumnIndxes(filePath, colMetadata, isFirstRowHeader);
             ValidateInput(colMetadata);            
 
-            return new CsvProfile(filePath, colMetadata, isFirstRowHeader);            
+            return new CsvProfile(filePath, colMetadata, isFirstRowHeader, delimiter);            
         }
 
         private static void UpdateMetaDataWithColumnIndxes(string filepath, ColumnMetadata[] colMetadata, bool isFirstRowHeader)

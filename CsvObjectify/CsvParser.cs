@@ -99,7 +99,7 @@ namespace CsvObjectify
             bool ignoreFirstLine = _profile.IsFirstRowHeader;
             using (TextFieldParser reader = new TextFieldParser(_profile.FilePath))
             {
-                reader.Delimiters = new string[] { "," };
+                reader.Delimiters = new string[] { _profile.Delimiter };
                 reader.HasFieldsEnclosedInQuotes = true;
 
                 if (ignoreFirstLine)                
