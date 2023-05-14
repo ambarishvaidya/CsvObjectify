@@ -8,21 +8,15 @@ namespace BenchmarkCsvObjectify
 {
     public class Program
     {
-        
-
         static void Main(string[] args)
         {
-            CreateCsvs(50);
-
+            CreateCsvs(500);
             BenchmarkRunner.Run<ResidentBenchmark>();
         }
-
-
 
         static void CreateCsvs(int count)
         {
             //return;
-
             ResidentFileCreater.CreateCsvFile(count, @"E:\MyData\MyWork\_Github\CsvObjectify\BenchmarkCsvObjectify\CsvFiles\ResidentsWithHeaderDefaultDelimiter.csv");
         }
     }
