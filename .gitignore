@@ -361,3 +361,6 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/BenchmarkCsvObjectify/CsvFiles/ResidentsWithHeaderDefaultDelimiter.csv
+/BenchmarkCsvObjectify/CsvFiles/ResidentsWithHeaderDefaultDelimiter.csv
+/BenchmarkCsvObjectify/CsvFiles/ResidentsWithHeaderDefaultDelimiter.csv

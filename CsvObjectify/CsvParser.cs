@@ -32,7 +32,7 @@ namespace CsvObjectify
             PropertyInfo[] tProperties = tObj.GetType().GetProperties();
             var tPropertyNameTypeMap = tProperties.ToDictionary(p => p.Name, p => (p.PropertyType, p));
 
-            foreach(var metadata in profile.ColumnMetadata)
+            foreach (var metadata in profile.ColumnMetadata)
             {
                 (Type, PropertyInfo) tTypeTuple;
                 if (!tPropertyNameTypeMap.TryGetValue(metadata.PropertyName, out tTypeTuple)) continue;
@@ -43,7 +43,7 @@ namespace CsvObjectify
                         $"{metadata.PropertyName} does not match to the entity type. {colType} != {tTypeTuple.Item1}");
 
                 var typeOfColumnDefn = typeof(ColumnDefinition<>).MakeGenericType(new Type[] { colType });
-                var columnDefnInstance = Activator.CreateInstance(typeOfColumnDefn, true) ;
+                var columnDefnInstance = Activator.CreateInstance(typeOfColumnDefn, true);
                 columnDefnInstance = metadata;
                 Type instanceType = metadata.GetType();
                 MethodInfo methodInfo = instanceType.GetMethod("GetCellData");
@@ -57,7 +57,7 @@ namespace CsvObjectify
             }
 
             return dictMapping;
-        }        
+        }
 
         public IEnumerable<T> Parse()
         {
@@ -67,11 +67,11 @@ namespace CsvObjectify
                 reader.Delimiters = new string[] { _profile.Delimiter };
                 reader.HasFieldsEnclosedInQuotes = true;
 
-                if (ignoreFirstLine)                
-                    reader.ReadLine();                
+                if (ignoreFirstLine)
+                    reader.ReadLine();
 
                 while (!reader.EndOfData)
-                {   
+                {
                     string[] lineData = reader.ReadFields();
 
                     T tObj = new T();
@@ -90,12 +90,44 @@ namespace CsvObjectify
                 }
             }
         }
+
+        public IEnumerable<T> ParseParallel()
+        {
+            bool ignoreFirstLine = _profile.IsFirstRowHeader;
+            using (TextFieldParser reader = new TextFieldParser(_profile.FilePath))
+            {
+                reader.Delimiters = new string[] { _profile.Delimiter };
+                reader.HasFieldsEnclosedInQuotes = true;
+
+                if (ignoreFirstLine)
+                    reader.ReadLine();
+
+                while (!reader.EndOfData)
+                {
+                    string[] lineData = reader.ReadFields();
+
+                    T tObj = new T();
+                    Parallel.ForEach(_mappings, kvp => 
+                    {
+                        string data = lineData[kvp.Key];
+                        //call the method in mappings to parse the data at kvpindex
+                        object parsedData = kvp.Value.CellDataMethodInfo.Invoke(kvp.Value.ColumnDefnInstance, new object[] { data });
+                        //from the property assign it to tObj
+                        tObj.GetType().InvokeMember(kvp.Value.PropertyName,
+                        BindingFlags.Instance | BindingFlags.Public | BindingFlags.SetProperty,
+                        Type.DefaultBinder, tObj, new object[] { parsedData });
+                    });
+                    
+                    yield return tObj;
+                }
+            }
+        }
     }
 
     internal class Mappings
     {
         public string PropertyName { get; init; }
         public MethodInfo CellDataMethodInfo { get; init; }
-        public  object ColumnDefnInstance { get; init; }
+        public object ColumnDefnInstance { get; init; }
     }
 }
