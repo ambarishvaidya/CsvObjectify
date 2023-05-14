@@ -1,5 +1,6 @@
 using CsvObjectify;
 using CsvObjectify.Column;
+using CsvObjectify.Column.Helper;
 using NUnit.Framework;
 
 namespace TestCsvObjectify
@@ -122,6 +123,45 @@ namespace TestCsvObjectify
             ICsvParser<Employee> csvParser = CsvParser<Employee>.Build(employeeProfile);
             bool hasEmployee = false;
             foreach(Employee employee in csvParser.Parse())
+            {
+                if (employee.Equals(record))
+                {
+                    hasEmployee = true;
+                    break;
+                }
+            }
+            Assert.IsTrue(hasEmployee);
+        }
+
+        [TestCase("Michaela", "", "Thompson", 23, @"345 Pinecrest Avenue, ""Floor 3, Suite 10"", Hamlet")]
+        [TestCase("John", "", "Doe", 20, @"123 Main Street, Apt 4B, City")]
+        [TestCase("Robert", "James", "Davis", 23, @"987 Mulberry Court, ""Apt 3C"", Borough")]
+        [TestCase("John", "", "O'Connor", 24, @"789 Main Street, Apt 1, City")]
+        public void Parse_WithValidEmployeeInputDifferentValidatorNoHeaderUsingHelpers_ConfirmEmployeeExists(
+            string firstname, string middlename, string lastname, int age, string address)
+        {
+            Employee record = new Employee()
+            {
+                FirstName = firstname,
+                MiddleName = middlename,
+                LastName = lastname,
+                Age = age,
+                Address = address
+            };
+
+            var employeeWithHeaderPath = @".\TestFiles\EmployeeWithoutHeaderHashDelimiter.csv";
+            var employeeColumnMetadata = new ColumnMetadata[]
+            {
+                ColumnDefinitionHelper.CreateStringColumn(0, "FirstName"),
+                ColumnDefinitionHelper.CreateStringColumn(1, "MiddleName"),
+                ColumnDefinitionHelper.CreateStringColumn(2, "LastName"),
+                ColumnDefinitionHelper.CreateIntColumn(3, "Age"),
+                ColumnDefinitionHelper.CreateStringColumn(4, "Address"),
+            };
+            var employeeProfile = CsvProfile.Build(employeeWithHeaderPath, employeeColumnMetadata, false, "#");
+            ICsvParser<Employee> csvParser = CsvParser<Employee>.Build(employeeProfile);
+            bool hasEmployee = false;
+            foreach (Employee employee in csvParser.Parse())
             {
                 if (employee.Equals(record))
                 {
