@@ -1,4 +1,5 @@
 ﻿using CsvObjectify.Column;
+using Microsoft.VisualBasic.FileIO;
 using System.Reflection;
 
 namespace CsvObjectify
@@ -57,7 +58,7 @@ namespace CsvObjectify
 
             return dictMapping;
         }
-
+        /*
         public IEnumerable<T> Parse()
         {
             bool ignoreFirstLine = _profile.IsFirstRowHeader;
@@ -80,6 +81,40 @@ namespace CsvObjectify
                         string data = lineData[kvp.Key];
                         //call the method in mappings to parse the data at kvpindex
                         object parsedData = kvp.Value.CellDataMethodInfo.Invoke(kvp.Value.ColumnDefnInstance, new object[] {data });
+                        //from the property assign it to tObj
+                        tObj.GetType().InvokeMember(kvp.Value.PropertyName,
+                        BindingFlags.Instance | BindingFlags.Public | BindingFlags.SetProperty,
+                        Type.DefaultBinder, tObj, new object[] { parsedData });
+                    }
+
+                    yield return tObj;
+                }
+            }
+        }
+
+        */
+
+        public IEnumerable<T> Parse()
+        {
+            bool ignoreFirstLine = _profile.IsFirstRowHeader;
+            using (TextFieldParser reader = new TextFieldParser(_profile.FilePath))
+            {
+                reader.Delimiters = new string[] { "," };
+                reader.HasFieldsEnclosedInQuotes = true;
+
+                if (ignoreFirstLine)                
+                    reader.ReadLine();                
+
+                while (!reader.EndOfData)
+                {   
+                    string[] lineData = reader.ReadFields();
+
+                    T tObj = new T();
+                    foreach (var kvp in _mappings)
+                    {
+                        string data = lineData[kvp.Key];
+                        //call the method in mappings to parse the data at kvpindex
+                        object parsedData = kvp.Value.CellDataMethodInfo.Invoke(kvp.Value.ColumnDefnInstance, new object[] { data });
                         //from the property assign it to tObj
                         tObj.GetType().InvokeMember(kvp.Value.PropertyName,
                         BindingFlags.Instance | BindingFlags.Public | BindingFlags.SetProperty,
