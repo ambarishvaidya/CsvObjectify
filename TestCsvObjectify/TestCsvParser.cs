@@ -1,7 +1,6 @@
 using CsvObjectify;
 using CsvObjectify.Column;
 using CsvObjectify.Column.Helper;
-using NUnit.Framework;
 
 namespace TestCsvObjectify
 {
@@ -41,15 +40,15 @@ namespace TestCsvObjectify
             _studentWithHeaderPath = @".\TestFiles\StudentWithHeader.csv";
             var columnMetadata = new ColumnMetadata[]
                 {
-                    new ColumnDefinition<string>("RollNo", s => s, "Rollnumber"),                    
+                    new ColumnDefinition<string>("RollNo", s => s, "Rollnumber"),
                 };
             var profile = CsvProfile.Build(_studentWithHeaderPath, columnMetadata, true);
-            Assert.Throws<InvalidOperationException>(() => CsvParser<Student>.Build(profile));            
+            Assert.Throws<InvalidOperationException>(() => CsvParser<Student>.Build(profile));
         }
 
         [Test]
         public void Build_WithValidInput_ReturnsICsvParser()
-        {                        
+        {
             ICsvParser<Student> csvParser = CsvParser<Student>.Build(_studentProfile);
             Assert.IsNotNull(csvParser);
         }
@@ -96,19 +95,21 @@ namespace TestCsvObjectify
             Assert.That(employee.Address == "123 Main Street, Apt 4B, City");
         }
 
-        [TestCase("Michaela","", "Thompson", 23, @"345 Pinecrest Avenue, ""Floor 3, Suite 10"", Hamlet")]
+        [TestCase("Michaela", "", "Thompson", 23, @"345 Pinecrest Avenue, ""Floor 3, Suite 10"", Hamlet")]
         [TestCase("John", "", "Doe", 20, @"123 Main Street, Apt 4B, City")]
         [TestCase("Robert", "James", "Davis", 23, @"987 Mulberry Court, ""Apt 3C"", Borough")]
         [TestCase("John", "", "O'Connor", 24, @"789 Main Street, Apt 1, City")]
         public void Parse_WithValidEmployeeInputDifferentValidatorNoHeader_ConfirmEmployeeExists(
-            string firstname, string middlename, string lastname, int age, string address )
+            string firstname, string middlename, string lastname, int age, string address)
         {
-            Employee record = new Employee() {
+            Employee record = new Employee()
+            {
                 FirstName = firstname,
-                MiddleName = middlename, 
-                LastName = lastname, 
-                Age = age, 
-                Address = address };
+                MiddleName = middlename,
+                LastName = lastname,
+                Age = age,
+                Address = address
+            };
 
             var employeeWithHeaderPath = @".\TestFiles\EmployeeWithoutHeaderHashDelimiter.csv";
             var employeeColumnMetadata = new ColumnMetadata[]
@@ -122,7 +123,7 @@ namespace TestCsvObjectify
             var employeeProfile = CsvProfile.Build(employeeWithHeaderPath, employeeColumnMetadata, false, "#");
             ICsvParser<Employee> csvParser = CsvParser<Employee>.Build(employeeProfile);
             bool hasEmployee = false;
-            foreach(Employee employee in csvParser.Parse())
+            foreach (Employee employee in csvParser.Parse())
             {
                 if (employee.Equals(record))
                 {
@@ -218,5 +219,5 @@ namespace TestCsvObjectify
         {
             return !(left == right);
         }
-    }    
+    }
 }
