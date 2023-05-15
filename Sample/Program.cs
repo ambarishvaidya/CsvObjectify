@@ -27,13 +27,8 @@ namespace Sample
                     }, true)
                 );
 
-            //var obj1 = residentParser.Parse();
-            //var obj2 = residentParser.Parse();
-            //var obj3 = residentParser.Parse();
-            //var obj4 = residentParser.Parse();
-
             List<Resident> residents = new List<Resident>();
-            foreach (var item in residentParser.ParseParallel())
+            foreach (var item in residentParser.Parse())
                 residents.Add(item);
 
             foreach(var item in residents)
