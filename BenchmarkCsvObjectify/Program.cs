@@ -10,7 +10,8 @@ namespace BenchmarkCsvObjectify
     {
         static void Main(string[] args)
         {
-            CreateCsvs(500);
+            CreateCsvs(100000);
+            //new ResidentBenchmark();
             BenchmarkRunner.Run<ResidentBenchmark>();
         }
 
@@ -28,8 +29,28 @@ namespace BenchmarkCsvObjectify
         public ResidentBenchmark()
         {
             BuildResidentParser();
-            ReadResidentSequential();
-            ReadResidentParallel();
+            //ReadResidentSequential();
+            //ReadResidentParallel();
+            //ReadResidentMemoryParallel();
+            ReadResidentChatParallel();
+        }
+
+        //[Benchmark]
+        public void ReadResidentChatParallel()
+        {
+            List<Resident> residents = new List<Resident>();
+            foreach (var item in _residentParser.ParseParallelMemoryChat())
+                residents.Add(item);
+            Console.WriteLine($"Total of {residents.Count} in the file.");
+        }
+
+        //[Benchmark]
+        public void ReadResidentMemoryParallel()
+        {
+            List<Resident> residents = new List<Resident>();
+            foreach (var item in _residentParser.ParseParallelMemory())
+                residents.Add(item);
+            Console.WriteLine($"Total of {residents.Count} in the file.");
         }
 
         private void BuildResidentParser()
@@ -41,7 +62,7 @@ namespace BenchmarkCsvObjectify
                     true));
         }
 
-        [Benchmark(Baseline =true)]
+        [Benchmark]
         public void ReadResidentSequential()
         {
             List<Resident> residents = new List<Resident>();
