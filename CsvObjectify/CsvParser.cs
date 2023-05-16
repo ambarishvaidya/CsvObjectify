@@ -72,22 +72,30 @@ namespace CsvObjectify
                     reader.ReadLine();
 
                 while (!reader.EndOfData)
-                {
+                {                    
                     string[] lineData = reader.ReadFields();
 
                     T tObj = new T();
-                    Parallel.ForEach(_mappings, kvp => 
+
+                    try
                     {
-                        string data = lineData[kvp.Key];
-                        //call the method in mappings to parse the data at kvpindex
-                        object parsedData = kvp.Value.CellDataMethodInfo.Invoke(kvp.Value.ColumnDefnInstance, new object[] { data });
-                        //from the property assign it to tObj
-                        tObj.GetType().InvokeMember(kvp.Value.PropertyName,
-                        BindingFlags.Instance | BindingFlags.Public | BindingFlags.SetProperty,
-                        Type.DefaultBinder, tObj, new object[] { parsedData });
-                    });
-                    
+                        Parallel.ForEach(_mappings, kvp =>
+                        {
+                            string data = lineData[kvp.Key];
+                            //call the method in mappings to parse the data at kvpindex
+                            object parsedData = kvp.Value.CellDataMethodInfo.Invoke(kvp.Value.ColumnDefnInstance, new object[] { data });
+                            //from the property assign it to tObj
+                            tObj.GetType().InvokeMember(kvp.Value.PropertyName,
+                            BindingFlags.Instance | BindingFlags.Public | BindingFlags.SetProperty,
+                            Type.DefaultBinder, tObj, new object[] { parsedData });
+                        });
+                    }
+                    catch (AggregateException exception)
+                    {
+                        string logMessage = $"Missing or incorrect items for condifured columns in row with data : {string.Join(" | ", lineData)}";
+                    }                    
                     yield return tObj;
+                    
                 }
             }
         }

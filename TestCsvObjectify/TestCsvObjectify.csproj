@@ -27,6 +27,12 @@
     <None Update="TestFiles\EmployeeWithoutHeaderHashDelimiter.csv">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="TestFiles\EmployeeWithoutHeaderHashDelimiterMissingRecord.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="TestFiles\EmployeeWithoutHeaderHashDelimiterWithEmptyLines.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="TestFiles\FilePath.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
