@@ -6,7 +6,7 @@ namespace CsvObjectify
     public class CsvProfile
     {
         private CsvProfile() { }
-        private CsvProfile(string filePath, ColumnMetadata[] colMetadata, bool isFirstRowHeader, string delimiter)
+        private CsvProfile(ColumnMetadata[] colMetadata, string filePath, bool isFirstRowHeader, string delimiter)
         {
             FilePath = filePath;
             ColumnMetadata = colMetadata;
@@ -19,18 +19,18 @@ namespace CsvObjectify
         public bool IsFirstRowHeader { get; init; }
         public string Delimiter { get; init; }
 
-        public static CsvProfile Build(string filePath, ColumnMetadata[] colMetadata, bool isFirstRowHeader, string delimiter = ",")
+        public static CsvProfile Build(ColumnMetadata[] colMetadata, string filePath, bool isFirstRowHeader, string delimiter = ",")
         {
             filePath = filePath?.Trim();
 
             Validate.RaiseExceptionIfStringIsEmptyOrNull(filePath, nameof(filePath));
-            UpdateMetaDataWithColumnIndxes(filePath, colMetadata, isFirstRowHeader, delimiter);
+            UpdateMetaDataWithColumnIndxes(colMetadata, filePath, isFirstRowHeader, delimiter);
             ValidateInput(colMetadata);            
 
-            return new CsvProfile(filePath, colMetadata, isFirstRowHeader, delimiter);            
+            return new CsvProfile(colMetadata, filePath, isFirstRowHeader, delimiter);            
         }
 
-        private static void UpdateMetaDataWithColumnIndxes(string filepath, ColumnMetadata[] colMetadata, bool isFirstRowHeader, string delimiter)
+        private static void UpdateMetaDataWithColumnIndxes(ColumnMetadata[] colMetadata, string filepath, bool isFirstRowHeader, string delimiter)
         {
             if (!colMetadata.Any(defn => defn.ColumnIndex == null))            
                 return;

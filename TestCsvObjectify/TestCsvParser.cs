@@ -20,7 +20,7 @@ namespace TestCsvObjectify
                     new ColumnDefinition<string>("FirstName", s => s),
                     new ColumnDefinition<DateOnly>(4, s => DateOnly.ParseExact(s, "dd-MMMM-yyyy"), "DOB")
                 };
-            _studentProfile = CsvProfile.Build(_studentWithHeaderPath, _studentColumnMetadata, true);
+            _studentProfile = CsvProfile.Build(_studentColumnMetadata, _studentWithHeaderPath, true);
 
             _employeeWithHeaderPath = @".\TestFiles\EmployeeWithHeader.csv";
             _employeeColumnMetadata = new ColumnMetadata[]
@@ -31,7 +31,7 @@ namespace TestCsvObjectify
                 new ColumnDefinition<int>("Age", s => int.Parse(s.Trim()), "Age"),
                 new ColumnDefinition<string>("Address", s => s.Trim()),
             };
-            _employeeProfile = CsvProfile.Build(_employeeWithHeaderPath, _employeeColumnMetadata, true);
+            _employeeProfile = CsvProfile.Build(_employeeColumnMetadata, _employeeWithHeaderPath, true);
         }
 
         [Test]
@@ -42,7 +42,7 @@ namespace TestCsvObjectify
                 {
                     new ColumnDefinition<string>("RollNo", s => s, "Rollnumber"),
                 };
-            var profile = CsvProfile.Build(_studentWithHeaderPath, columnMetadata, true);
+            var profile = CsvProfile.Build(columnMetadata, _studentWithHeaderPath, true);
             Assert.Throws<InvalidOperationException>(() => CsvParser<Student>.Build(profile));
         }
 
@@ -89,7 +89,7 @@ namespace TestCsvObjectify
                 new ColumnDefinition<int>(3, s => int.Parse(s.Trim()), "Age"),
                 new ColumnDefinition<string>(4, s => s.Trim(), "Address"),
             };
-            var employeeProfile = CsvProfile.Build(employeeWithHeaderPath, employeeColumnMetadata, false, "#");
+            var employeeProfile = CsvProfile.Build(employeeColumnMetadata, employeeWithHeaderPath, false, "#");
             ICsvParser<Employee> csvParser = CsvParser<Employee>.Build(employeeProfile);
             Employee employee = csvParser.Parse().First();
             Assert.That(employee.Address == "123 Main Street, Apt 4B, City");
@@ -120,7 +120,7 @@ namespace TestCsvObjectify
                 new ColumnDefinition<int>(3, s => int.Parse(s.Trim()), "Age"),
                 new ColumnDefinition<string>(4, s => s.Trim(), "Address"),
             };
-            var employeeProfile = CsvProfile.Build(employeeWithHeaderPath, employeeColumnMetadata, false, "#");
+            var employeeProfile = CsvProfile.Build(employeeColumnMetadata, employeeWithHeaderPath, false, "#");
             ICsvParser<Employee> csvParser = CsvParser<Employee>.Build(employeeProfile);
             bool hasEmployee = false;
             foreach (Employee employee in csvParser.Parse())
@@ -159,7 +159,7 @@ namespace TestCsvObjectify
                 ColumnDefinitionHelper.CreateIntColumn(3, "Age"),
                 ColumnDefinitionHelper.CreateStringColumn(4, "Address"),
             };
-            var employeeProfile = CsvProfile.Build(employeeWithHeaderPath, employeeColumnMetadata, false, "#");
+            var employeeProfile = CsvProfile.Build(employeeColumnMetadata, employeeWithHeaderPath, false, "#");
             ICsvParser<Employee> csvParser = CsvParser<Employee>.Build(employeeProfile);
             bool hasEmployee = false;
             foreach (Employee employee in csvParser.Parse())
@@ -198,7 +198,7 @@ namespace TestCsvObjectify
                 ColumnDefinitionHelper.CreateIntColumn(3, "Age"),
                 ColumnDefinitionHelper.CreateStringColumn(4, "Address"),
             };
-            var employeeProfile = CsvProfile.Build(employeeWithHeaderPath, employeeColumnMetadata, false, "#");
+            var employeeProfile = CsvProfile.Build(employeeColumnMetadata, employeeWithHeaderPath, false, "#");
             ICsvParser<Employee> csvParser = CsvParser<Employee>.Build(employeeProfile);
             bool hasEmployee = false;
             foreach (Employee employee in csvParser.Parse())
@@ -237,7 +237,7 @@ namespace TestCsvObjectify
                 ColumnDefinitionHelper.CreateIntColumn(3, "Age"),
                 ColumnDefinitionHelper.CreateStringColumn(4, "Address"),
             };
-            var employeeProfile = CsvProfile.Build(employeeWithHeaderPath, employeeColumnMetadata, false, "#");
+            var employeeProfile = CsvProfile.Build(employeeColumnMetadata, employeeWithHeaderPath, false, "#");
             ICsvParser<Employee> csvParser = CsvParser<Employee>.Build(employeeProfile);
             bool hasEmployee = false;
             foreach (Employee employee in csvParser.Parse())

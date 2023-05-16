@@ -1,6 +1,5 @@
 ﻿using CsvObjectify.Column;
 using Microsoft.VisualBasic.FileIO;
-using System.Linq.Expressions;
 using System.Reflection;
 
 namespace CsvObjectify
@@ -48,7 +47,7 @@ namespace CsvObjectify
                 columnDefnInstance = metadata;
                 Type instanceType = metadata.GetType();
                 MethodInfo methodInfo = instanceType.GetMethod("GetCellData");
-                
+
                 dictMapping.Add(metadata.ColumnIndex.Value, new Mappings()
                 {
                     PropertyName = metadata.PropertyName,
@@ -59,7 +58,7 @@ namespace CsvObjectify
 
             return dictMapping;
         }
-                
+
         public IEnumerable<T> Parse()
         {
             bool ignoreFirstLine = _profile.IsFirstRowHeader;
@@ -72,7 +71,7 @@ namespace CsvObjectify
                     reader.ReadLine();
 
                 while (!reader.EndOfData)
-                {                    
+                {
                     string[] lineData = reader.ReadFields();
 
                     T tObj = new T();
@@ -93,9 +92,9 @@ namespace CsvObjectify
                     catch (AggregateException exception)
                     {
                         string logMessage = $"Missing or incorrect items for condifured columns in row with data : {string.Join(" | ", lineData)}";
-                    }                    
+                    }
                     yield return tObj;
-                    
+
                 }
             }
         }
@@ -105,6 +104,6 @@ namespace CsvObjectify
     {
         public string PropertyName { get; init; }
         public MethodInfo CellDataMethodInfo { get; init; }
-        public object ColumnDefnInstance { get; init; }        
+        public object ColumnDefnInstance { get; init; }
     }
 }

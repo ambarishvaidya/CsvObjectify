@@ -16,15 +16,15 @@ namespace Sample
         {
             ICsvParser<Resident> residentParser = CsvParser<Resident>.Build
                 (
-                    CsvProfile.Build(@"E:\MyData\MyWork\_Github\CsvObjectify\BenchmarkCsvObjectify\CsvFiles\ResidentsWithHeaderDefaultDelimiter.csv",
-                    new CsvObjectify.Column.ColumnMetadata[]
-                    { 
+                    CsvProfile.Build(new CsvObjectify.Column.ColumnMetadata[]
+                    {
                         ColumnDefinitionHelper.CreateStringColumn("First Name", "FirstName"),
                         new ColumnDefinition<string>("Middle Name", s => s.Trim(), "MiddleName"),
                         new ColumnDefinition<string>(2, s => s.Trim(), "LastName"),
                         new ColumnDefinition<DateTime>(4, s => DateTime.Parse(s), "DateOfBirth"),
                         new ColumnDefinition<char>("Disability", s => ParseDisablity(s), "Disability")
-                    }, true)
+                    },
+                    @"E:\MyData\MyWork\_Github\CsvObjectify\BenchmarkCsvObjectify\CsvFiles\ResidentsWithHeaderDefaultDelimiter.csv", true)
                 );
 
             List<Resident> residents = new List<Resident>();

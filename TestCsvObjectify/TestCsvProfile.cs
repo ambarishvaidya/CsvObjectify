@@ -15,45 +15,45 @@ namespace TestCsvObjectify
         [Test]
         public void Build_WithEmptyCollection_ThrowsException()
         {
-            Assert.Throws<ArgumentException>(() => CsvProfile.Build(_studentWithHeaderPath, Array.Empty<ColumnDefinition<string>>(), false));
+            Assert.Throws<ArgumentException>(() => CsvProfile.Build(Array.Empty<ColumnDefinition<string>>(), _studentWithHeaderPath, false));
         }
 
         [Test]
         public void Build_WithDuplicateColumnNames_ThrowsException()
         {
-            Assert.Throws<InvalidDataException>(() => CsvProfile.Build(_studentWithHeaderPath, new ColumnDefinition<string>[]
+            Assert.Throws<InvalidDataException>(() => CsvProfile.Build(new ColumnDefinition<string>[]
             {
                 new ColumnDefinition<string>(columnName:"FirstName", str => str),
                 new ColumnDefinition<string>(columnName:"FirstName", str => str)
-            }, true));
+            }, _studentWithHeaderPath, true));
         }
 
         [TestCase("")]
         [TestCase(" ")]
         public void Build_WithEmptyFilePath_ThrowsArgumentException(string filePath)
         {
-            Assert.Throws<ArgumentException>(() => CsvProfile.Build(filePath, new ColumnDefinition<string>[]
+            Assert.Throws<ArgumentException>(() => CsvProfile.Build(new ColumnDefinition<string>[]
             {
                 new ColumnDefinition<string>("test", str => str)
-            }, false));
+            }, filePath, false));
         }
         
         [Test]
         public void Build_WithNullFilePath_ThrowsArgumentNullException()
         {
-            Assert.Throws<ArgumentNullException>(() => CsvProfile.Build(null, new ColumnDefinition<string>[]
+            Assert.Throws<ArgumentNullException>(() => CsvProfile.Build(new ColumnDefinition<string>[]
             {
                 new ColumnDefinition<string>("test", str => str)
-            }, false));
+            }, null, false));
         }
 
         [Test]
         public void Build_WithMissingColumns_ThrowsInvalidDataException()
         {
-            Assert.Throws<InvalidDataException>(() => CsvProfile.Build(_studentWithHeaderPath, new ColumnDefinition<string>[]
+            Assert.Throws<InvalidDataException>(() => CsvProfile.Build(new ColumnDefinition<string>[]
             {
                 new ColumnDefinition<string>("firstName", str => str)
-            }, true));
+            }, _studentWithHeaderPath, true));
         }
 
         [TestCase("RollNo", 0)]
@@ -62,28 +62,28 @@ namespace TestCsvObjectify
         {
             ColumnDefinition<string> columnDefinition = new ColumnDefinition<string>(colName, str => str);
 
-            var profile = CsvProfile.Build(_studentWithHeaderPath, new ColumnDefinition<string>[] {columnDefinition }, true);
+            var profile = CsvProfile.Build(new ColumnDefinition<string>[] { columnDefinition }, _studentWithHeaderPath, true);
             Assert.That(columnDefinition.ColumnIndex.HasValue && columnDefinition.ColumnIndex.Value == colIndex);
         }
 
         [Test]
         public void Build_WithDuplicateIndex_ThrowsInvalidDataException()
         {
-            Assert.Throws<InvalidDataException>(() => CsvProfile.Build(_studentWithHeaderPath, new ColumnMetadata[]
+            Assert.Throws<InvalidDataException>(() => CsvProfile.Build(new ColumnMetadata[]
             {
                 new ColumnDefinition<int>(0, str => int.Parse(str), "RollNo"),
                 new ColumnDefinition<string>("RollNo", str => str)
-            }, true));
+            }, _studentWithHeaderPath, true));
         }
 
         [Test]
         public void Build_WithIsRowHeaderFalse_ThrowsInvalidOperationException()
         {
-            Assert.Throws<InvalidOperationException>(() => CsvProfile.Build(_studentWithHeaderPath, new ColumnMetadata[]
+            Assert.Throws<InvalidOperationException>(() => CsvProfile.Build(new ColumnMetadata[]
             {
                 new ColumnDefinition<int>(0, str => int.Parse(str), "RollNo"),
                 new ColumnDefinition<string>("FirstName", str => str)
-            }, false));
+            }, _studentWithHeaderPath, false));
         }
     }
 }
