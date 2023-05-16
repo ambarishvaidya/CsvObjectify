@@ -15,7 +15,12 @@ namespace TestCsvObjectify
         [Test]
         public void Build_WithEmptyCollection_ThrowsException()
         {
-            Assert.Throws<ArgumentException>(() => CsvProfile.Build(Array.Empty<ColumnDefinition<string>>(), _studentWithHeaderPath, false));
+            Assert.Throws<ArgumentException>(() => CsvProfile.Build(Array.Empty<ColumnDefinition<string>>(),
+                new FileDetails()
+                {
+                    FilePath = _studentWithHeaderPath,
+                    IsFirstRowHeader = false
+                }));
         }
 
         [Test]
@@ -25,7 +30,7 @@ namespace TestCsvObjectify
             {
                 new ColumnDefinition<string>(columnName:"FirstName", str => str),
                 new ColumnDefinition<string>(columnName:"FirstName", str => str)
-            }, _studentWithHeaderPath, true));
+            }, new FileDetails() { FilePath = _studentWithHeaderPath, IsFirstRowHeader = true }));
         }
 
         [TestCase("")]
@@ -35,7 +40,7 @@ namespace TestCsvObjectify
             Assert.Throws<ArgumentException>(() => CsvProfile.Build(new ColumnDefinition<string>[]
             {
                 new ColumnDefinition<string>("test", str => str)
-            }, filePath, false));
+            }, new FileDetails { FilePath = filePath, IsFirstRowHeader = false }));
         }
         
         [Test]
@@ -44,7 +49,7 @@ namespace TestCsvObjectify
             Assert.Throws<ArgumentNullException>(() => CsvProfile.Build(new ColumnDefinition<string>[]
             {
                 new ColumnDefinition<string>("test", str => str)
-            }, null, false));
+            }, new FileDetails() { FilePath = null, IsFirstRowHeader = false }));
         }
 
         [Test]
@@ -53,7 +58,7 @@ namespace TestCsvObjectify
             Assert.Throws<InvalidDataException>(() => CsvProfile.Build(new ColumnDefinition<string>[]
             {
                 new ColumnDefinition<string>("firstName", str => str)
-            }, _studentWithHeaderPath, true));
+            }, new FileDetails() { FilePath = _studentWithHeaderPath, IsFirstRowHeader = true }));
         }
 
         [TestCase("RollNo", 0)]
@@ -62,7 +67,12 @@ namespace TestCsvObjectify
         {
             ColumnDefinition<string> columnDefinition = new ColumnDefinition<string>(colName, str => str);
 
-            var profile = CsvProfile.Build(new ColumnDefinition<string>[] { columnDefinition }, _studentWithHeaderPath, true);
+            var profile = CsvProfile.Build(new ColumnDefinition<string>[] { columnDefinition },
+                new FileDetails()
+                {
+                    FilePath = _studentWithHeaderPath,
+                    IsFirstRowHeader = true
+                });
             Assert.That(columnDefinition.ColumnIndex.HasValue && columnDefinition.ColumnIndex.Value == colIndex);
         }
 
@@ -73,7 +83,7 @@ namespace TestCsvObjectify
             {
                 new ColumnDefinition<int>(0, str => int.Parse(str), "RollNo"),
                 new ColumnDefinition<string>("RollNo", str => str)
-            }, _studentWithHeaderPath, true));
+            }, new FileDetails() { FilePath = _studentWithHeaderPath, IsFirstRowHeader = true }));
         }
 
         [Test]
@@ -83,7 +93,7 @@ namespace TestCsvObjectify
             {
                 new ColumnDefinition<int>(0, str => int.Parse(str), "RollNo"),
                 new ColumnDefinition<string>("FirstName", str => str)
-            }, _studentWithHeaderPath, false));
+            }, new FileDetails() { FilePath = _studentWithHeaderPath, IsFirstRowHeader = false }));
         }
     }
 }

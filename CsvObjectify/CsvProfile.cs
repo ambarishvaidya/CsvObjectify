@@ -3,48 +3,51 @@ using CsvObjectify.Validation;
 
 namespace CsvObjectify
 {
+    public class FileDetails
+    {
+        public string FilePath { get; set; }
+        public string Delimiter { get; set; } = ",";
+        public bool IsFirstRowHeader { get; set; }
+    }
+
     public class CsvProfile
     {
         private CsvProfile() { }
-        private CsvProfile(ColumnMetadata[] colMetadata, string filePath, bool isFirstRowHeader, string delimiter)
-        {
-            FilePath = filePath;
+        private CsvProfile(ColumnMetadata[] colMetadata, FileDetails fileDetails)
+        {   
             ColumnMetadata = colMetadata;
-            IsFirstRowHeader = isFirstRowHeader;
-            Delimiter = delimiter;
+            FileDetails = fileDetails;
         }
 
         public ColumnMetadata[] ColumnMetadata { get; init; }
-        public string FilePath { get; init; }
-        public bool IsFirstRowHeader { get; init; }
-        public string Delimiter { get; init; }
+        public FileDetails FileDetails { get; init; }        
 
-        public static CsvProfile Build(ColumnMetadata[] colMetadata, string filePath, bool isFirstRowHeader, string delimiter = ",")
+        public static CsvProfile Build(ColumnMetadata[] colMetadata, FileDetails fileDetails)
         {
-            filePath = filePath?.Trim();
+            fileDetails.FilePath = fileDetails.FilePath?.Trim();
 
-            Validate.RaiseExceptionIfStringIsEmptyOrNull(filePath, nameof(filePath));
-            UpdateMetaDataWithColumnIndxes(colMetadata, filePath, isFirstRowHeader, delimiter);
+            Validate.RaiseExceptionIfStringIsEmptyOrNull(fileDetails.FilePath, nameof(fileDetails.FilePath));
+            UpdateMetaDataWithColumnIndxes(colMetadata, fileDetails);
             ValidateInput(colMetadata);            
 
-            return new CsvProfile(colMetadata, filePath, isFirstRowHeader, delimiter);            
+            return new CsvProfile(colMetadata, fileDetails);            
         }
 
-        private static void UpdateMetaDataWithColumnIndxes(ColumnMetadata[] colMetadata, string filepath, bool isFirstRowHeader, string delimiter)
+        private static void UpdateMetaDataWithColumnIndxes(ColumnMetadata[] colMetadata, FileDetails fileDetails)
         {
             if (!colMetadata.Any(defn => defn.ColumnIndex == null))            
                 return;
             
-            if (!isFirstRowHeader)
+            if (!fileDetails.IsFirstRowHeader)
                 throw new InvalidOperationException($"Column Index missing. Assign Column Index to all ColumnDefinition or " +
-                    $"provide csv with header and {nameof(isFirstRowHeader)} variable set to true.");
+                    $"provide csv with header and {nameof(fileDetails.IsFirstRowHeader)} variable set to true.");
 
-            string headerLine = GetHeader(filepath);
-            if (headerLine.IsEmpty()) throw new InvalidDataException($"Header line is empty in {filepath}.");
+            string headerLine = GetHeader(fileDetails.FilePath);
+            if (headerLine.IsEmpty()) throw new InvalidDataException($"Header line is empty in {fileDetails.FilePath}.");
 
             int index = 0;
             Dictionary<string, int> strings = new Dictionary<string, int>();
-            foreach (var str in headerLine.Split(delimiter).Select(s => s.Trim()))
+            foreach (var str in headerLine.Split(fileDetails.Delimiter).Select(s => s.Trim()))
             {
                 if (strings.ContainsKey(str))
                     throw new InvalidDataException($"Duplicates data [{str}]in Header.");

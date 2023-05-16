@@ -61,10 +61,10 @@ namespace CsvObjectify
 
         public IEnumerable<T> Parse()
         {
-            bool ignoreFirstLine = _profile.IsFirstRowHeader;
-            using (TextFieldParser reader = new TextFieldParser(_profile.FilePath))
+            bool ignoreFirstLine = _profile.FileDetails.IsFirstRowHeader;
+            using (TextFieldParser reader = new TextFieldParser(_profile.FileDetails.FilePath))
             {
-                reader.Delimiters = new string[] { _profile.Delimiter };
+                reader.Delimiters = new string[] { _profile.FileDetails.Delimiter };
                 reader.HasFieldsEnclosedInQuotes = true;
 
                 if (ignoreFirstLine)

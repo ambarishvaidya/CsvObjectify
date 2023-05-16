@@ -24,7 +24,11 @@ namespace Sample
                         new ColumnDefinition<DateTime>(4, s => DateTime.Parse(s), "DateOfBirth"),
                         new ColumnDefinition<char>("Disability", s => ParseDisablity(s), "Disability")
                     },
-                    @"E:\MyData\MyWork\_Github\CsvObjectify\BenchmarkCsvObjectify\CsvFiles\ResidentsWithHeaderDefaultDelimiter.csv", true)
+                    new FileDetails()
+                    {
+                        FilePath = @"E:\MyData\MyWork\_Github\CsvObjectify\BenchmarkCsvObjectify\CsvFiles\ResidentsWithHeaderDefaultDelimiter.csv",
+                        IsFirstRowHeader = true
+                    })
                 );
 
             List<Resident> residents = new List<Resident>();

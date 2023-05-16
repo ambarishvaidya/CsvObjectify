@@ -37,8 +37,11 @@ namespace BenchmarkCsvObjectify
             _residentParser = CsvParser<Resident>.Build(
                 CsvProfile.Build(
                     Resident.GetMetadata,
-                    @".\CsvFiles\ResidentsWithHeaderDefaultDelimiter.csv",
-                    true));
+                    new FileDetails()
+                    {
+                        FilePath = @".\CsvFiles\ResidentsWithHeaderDefaultDelimiter.csv",
+                        IsFirstRowHeader = true
+                    }));
         }
 
         [Benchmark]
