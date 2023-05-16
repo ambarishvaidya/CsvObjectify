@@ -22,6 +22,12 @@ namespace TestCsvObjectify
             Assert.IsNotNull(defn);
         }
 
+        [Test]
+        public void Constructor_WithInValidIndexInputs_ThrowsArgumentException()
+        {
+            Assert.Throws<ArgumentException>(() => new ColumnDefinition<string>(-1, str => str, "PropertyName"));            
+        }
+
         [TestCase("")]
         [TestCase("   ")]        
         public void Constructor_WithEmptyColumnName_ThrowsArgumentException(string columnName)

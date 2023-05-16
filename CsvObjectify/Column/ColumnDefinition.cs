@@ -21,7 +21,9 @@ namespace CsvObjectify.Column
         }
 
         public ColumnDefinition(int columnIndex, Func<string, T> csvToEntityProperty, string entityPropertyName)            
-        { 
+        {
+            if (columnIndex < 0)
+                throw new ArgumentException($"Column index cannot be less than 0.");
             ColumnIndex = columnIndex;
             CsvToEntityProperty = csvToEntityProperty;
             PropertyName = entityPropertyName?.Trim();
