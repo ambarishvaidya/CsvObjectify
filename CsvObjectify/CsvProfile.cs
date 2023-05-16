@@ -24,13 +24,13 @@ namespace CsvObjectify
             filePath = filePath?.Trim();
 
             Validate.RaiseExceptionIfStringIsEmptyOrNull(filePath, nameof(filePath));
-            UpdateMetaDataWithColumnIndxes(filePath, colMetadata, isFirstRowHeader);
+            UpdateMetaDataWithColumnIndxes(filePath, colMetadata, isFirstRowHeader, delimiter);
             ValidateInput(colMetadata);            
 
             return new CsvProfile(filePath, colMetadata, isFirstRowHeader, delimiter);            
         }
 
-        private static void UpdateMetaDataWithColumnIndxes(string filepath, ColumnMetadata[] colMetadata, bool isFirstRowHeader)
+        private static void UpdateMetaDataWithColumnIndxes(string filepath, ColumnMetadata[] colMetadata, bool isFirstRowHeader, string delimiter)
         {
             if (!colMetadata.Any(defn => defn.ColumnIndex == null))            
                 return;
@@ -44,7 +44,7 @@ namespace CsvObjectify
 
             int index = 0;
             Dictionary<string, int> strings = new Dictionary<string, int>();
-            foreach (var str in headerLine.Split(",").Select(s => s.Trim()))
+            foreach (var str in headerLine.Split(delimiter).Select(s => s.Trim()))
             {
                 if (strings.ContainsKey(str))
                     throw new InvalidDataException($"Duplicates data [{str}]in Header.");
