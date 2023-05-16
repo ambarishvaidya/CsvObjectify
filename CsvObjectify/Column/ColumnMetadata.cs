@@ -5,6 +5,6 @@
         public abstract Type GetColumnType();
         public string ColumnName { get; init; }
         public string PropertyName { get; init; }
-        public int? ColumnIndex { get; set; }
+        public int? ColumnIndex { get; internal set; }
     }
 }
