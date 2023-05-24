@@ -26,7 +26,7 @@ namespace Sample
                     },
                     new FileDetails()
                     {
-                        FilePath = @"E:\MyData\MyWork\_Github\CsvObjectify\BenchmarkCsvObjectify\CsvFiles\ResidentsWithHeaderDefaultDelimiter.csv",
+                        FilePath = @".\ResidentsWithHeaderDefaultDelimiter.csv",
                         IsFirstRowHeader = true
                     })
                 );
