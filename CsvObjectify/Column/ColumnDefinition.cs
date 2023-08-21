@@ -1,4 +1,5 @@
 ﻿using CsvObjectify.Validation;
+using System;
 
 namespace CsvObjectify.Column
 {
@@ -18,24 +19,28 @@ namespace CsvObjectify.Column
             Validate.RaiseExceptionIfStringIsEmptyOrNull(ColumnName, nameof(ColumnName));            
 
             ValidateInput();
+            CsvParserLog.Info?.Invoke(LogColumnDefinition());
         }
 
         public ColumnDefinition(int columnIndex, Func<string, T> csvToEntityProperty, string entityPropertyName)            
         {
-            if (columnIndex < 0)
-                throw new ArgumentException($"Column index cannot be less than 0.");
+            Validate.RaiseArgumentExceptionForInvalidIndex(columnIndex);
             ColumnIndex = columnIndex;
             CsvToEntityProperty = csvToEntityProperty;
             PropertyName = entityPropertyName?.Trim();
 
             ValidateInput();
+            CsvParserLog.Info?.Invoke(LogColumnDefinition());
         }
 
         private void ValidateInput()
         {
             Validate.RaiseExceptionIfStringIsEmptyOrNull(PropertyName, nameof(PropertyName));
             if (CsvToEntityProperty == null)
+            {
+                CsvParserLog.Error?.Invoke("CsvToEntityProperty is a mandatory field and cannot be null.");
                 throw new ArgumentNullException($"CsvToEntityProperty is a mandatory field and cannot be null.");
+            }
         }
                 
         private Func<string, T> CsvToEntityProperty { get; init; }

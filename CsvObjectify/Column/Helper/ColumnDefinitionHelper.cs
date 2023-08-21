@@ -14,7 +14,7 @@
         }
         public static ColumnDefinition<string> CreateStringColumn(int index, string propertyName)
         {
-            if (index < 0) throw new ArgumentException($"Csv index cannot be < 0.");
+            Validation.Validate.RaiseArgumentExceptionForInvalidIndex(index);
             Validation.Validate.RaiseExceptionIfStringIsEmptyOrNull(propertyName, nameof(propertyName));
             return new ColumnDefinition<string>(index, s => s.Trim(), propertyName);
         }
@@ -31,7 +31,7 @@
         }
         public static ColumnDefinition<int> CreateIntColumn(int index, string propertyName)
         {
-            if (index < 0) throw new ArgumentException($"Csv index cannot be < 0.");
+            Validation.Validate.RaiseArgumentExceptionForInvalidIndex(index);
             Validation.Validate.RaiseExceptionIfStringIsEmptyOrNull(propertyName, nameof(propertyName));
             return new ColumnDefinition<int>(index, s => int.Parse(s.Trim()), propertyName);
         }
@@ -48,7 +48,7 @@
         }
         public static ColumnDefinition<double> CreateDoubleColumn(int index, string propertyName)
         {
-            if (index < 0) throw new ArgumentException($"Csv index cannot be < 0.");
+            Validation.Validate.RaiseArgumentExceptionForInvalidIndex(index);
             Validation.Validate.RaiseExceptionIfStringIsEmptyOrNull(propertyName, nameof(propertyName));
             return new ColumnDefinition<double>(index, s => double.Parse(s.Trim()), propertyName);
         }
@@ -65,7 +65,7 @@
         }
         public static ColumnDefinition<float> CreateFloatColumn(int index, string propertyName)
         {
-            if (index < 0) throw new ArgumentException($"Csv index cannot be < 0.");
+            Validation.Validate.RaiseArgumentExceptionForInvalidIndex(index);
             Validation.Validate.RaiseExceptionIfStringIsEmptyOrNull(propertyName, nameof(propertyName));
             return new ColumnDefinition<float>(index, s => float.Parse(s.Trim()), propertyName);
         }

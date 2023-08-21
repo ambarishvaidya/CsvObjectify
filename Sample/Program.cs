@@ -14,9 +14,10 @@ namespace Sample
 
         public Program()
         {
+            CsvParserLog.SetLogger(Console.WriteLine, Console.WriteLine, Console.WriteLine);
             ICsvParser<Resident> residentParser = CsvParser<Resident>.Build
                 (
-                    CsvProfile.Build(new CsvObjectify.Column.ColumnMetadata[]
+                    CsvProfile.Build(new ColumnMetadata[]
                     {
                         ColumnDefinitionHelper.CreateStringColumn("First Name", "FirstName"),
                         new ColumnDefinition<string>("Middle Name", s => s.Trim(), "MiddleName"),
@@ -35,7 +36,7 @@ namespace Sample
             foreach (var item in residentParser.Parse())
                 residents.Add(item);
 
-            foreach(var item in residents)
+            foreach (var item in residents)
                 Console.WriteLine(item.ToString());
 
             Console.ReadLine();

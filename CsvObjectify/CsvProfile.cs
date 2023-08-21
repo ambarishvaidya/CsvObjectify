@@ -8,6 +8,13 @@ namespace CsvObjectify
         public string FilePath { get; set; }
         public string Delimiter { get; set; } = ",";
         public bool IsFirstRowHeader { get; set; }
+
+        public override string ToString()
+        {
+            return $"{Environment.NewLine}    FilePath : {FilePath??"NULL"}" +
+                $"{Environment.NewLine}    Delimiter : '{Delimiter}' " +
+                $"{Environment.NewLine}    IsFirstRowHeader : {IsFirstRowHeader}";
+        }
     }
 
     public class CsvProfile
@@ -24,6 +31,10 @@ namespace CsvObjectify
 
         public static CsvProfile Build(ColumnMetadata[] colMetadata, FileDetails fileDetails)
         {
+            CsvParserLog.Info?.Invoke($"Building CsvProfile for FileDetails [{fileDetails}] " +
+                $"{Environment.NewLine}with ColumnDefinitions as - {Environment.NewLine}    " +
+                $"{string.Join(Environment.NewLine + "    ", colMetadata.Select(c => c.LogColumnDefinitionUsage()))}");
+
             fileDetails.FilePath = fileDetails.FilePath?.Trim();
 
             Validate.RaiseExceptionIfStringIsEmptyOrNull(fileDetails.FilePath, nameof(fileDetails.FilePath));
