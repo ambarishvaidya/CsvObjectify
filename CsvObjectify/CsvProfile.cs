@@ -73,7 +73,7 @@ namespace CsvObjectify
 
             var missingColumnNames = colMetadata.Where(defn => defn.ColumnIndex == null).Select(n => n.ColumnName);
             if (missingColumnNames.Any())
-                throw new InvalidDataException($"Column names not present in Header. Misssing names [{string.Join(",", missingColumnNames)}]");
+                throw new InvalidDataException($"Column names not present in Header. Missing names [{string.Join(",", missingColumnNames)}]");
         }
 
         private static string GetHeader(string filepath)
