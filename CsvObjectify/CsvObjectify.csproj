@@ -3,7 +3,23 @@
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <PackageId>CsvObjectify</PackageId>
+    <Title>CsvObjectify</Title>
+    <Version>1.0.0.0</Version>
+    <Authors>ambarish.vaidya</Authors>
+    <Company>ambarish.vaidya</Company>
+    <Product>CsvObjectify</Product>
+    <Copyright>@ambarish.vaidya</Copyright>
+    <PackageReadmeFile>ReadMe.md</PackageReadmeFile>
     <!--<Nullable>enable</Nullable>-->
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\Docs\ReadMe.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
 
 </Project>
