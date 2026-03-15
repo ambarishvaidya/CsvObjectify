@@ -10,9 +10,17 @@ namespace BenchmarkCsvObjectify
     {
         static void Main(string[] args)
         {
-            CreateCsvs(100000);
+            //CreateCsvs(100);
+            ////new ResidentBenchmark();
+            //BenchmarkRunner.Run<ResidentBenchmark>();
+
+            //CreateCsvs(100000);
+            ////new ResidentBenchmark();
+            //BenchmarkRunner.Run<ResidentBenchmark>();
+
+            CreateCsvs(10);
             //new ResidentBenchmark();
-            BenchmarkRunner.Run<ResidentBenchmark>();
+            BenchmarkRunner.Run<ResidentBenchmark>();            
         }
 
         static void CreateCsvs(int count)
@@ -29,7 +37,9 @@ namespace BenchmarkCsvObjectify
         public ResidentBenchmark()
         {
             BuildResidentParser();
-            ReadResidentParallel();            
+            //Parse();
+            //ParseWithSpan();
+            //ParseWithoutSpan();
         }
 
         private void BuildResidentParser()
@@ -45,12 +55,24 @@ namespace BenchmarkCsvObjectify
         }
 
         [Benchmark]
-        public void ReadResidentParallel()
+        public void Parse()
         {
-            List<Resident> residents = new List<Resident>();
-            foreach (var item in _residentParser.Parse())
-                residents.Add(item);
+            List<Resident> residents = [.. _residentParser.Parse()];
             Console.WriteLine($"Total of {residents.Count} in the file.");
         }
+
+        //[Benchmark]
+        //public void ParseWithoutSpan()
+        //{
+        //    List<Resident> residents = [.. _residentParser.ParseWithoutSpan()];
+        //    Console.WriteLine($"Total of {residents.Count} in the file.");
+        //}
+
+        //[Benchmark]
+        //public void ParseWithSpan()
+        //{
+        //    List<Resident> residents = [.. _residentParser.ParseWithSpan()];
+        //    Console.WriteLine($"Total of {residents.Count} in the file.");
+        //}
     }
 }

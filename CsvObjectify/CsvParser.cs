@@ -60,10 +60,30 @@ namespace CsvObjectify
             return dictMapping;
         }
 
+        private string Unescape(ReadOnlySpan<char> data)
+        {
+            if (data.Length > 1 && data[0] == '"' && data[^1] == '"')
+                data = data.Slice(1, data.Length - 2);
+
+            StringBuilder stringBuilder = new StringBuilder();
+            for (int counter = 0; counter < data.Length; counter++)
+            {
+                if (data[counter] == '"' && counter + 1 < data.Length && data[counter + 1] == '"')
+                {
+                    stringBuilder.Append('"');
+                    counter++;
+                }
+                else
+                {
+                    stringBuilder.Append(data[counter]);
+                }
+            }
+            return stringBuilder.ToString();
+        }
+
         public IEnumerable<T> Parse() => ParseWithSpan();
         
-
-        public IEnumerable<T> ParseWithSpan()
+        private IEnumerable<T> ParseWithSpan()
         {
             bool ignoreFirstLine = _profile.FileDetails.IsFirstRowHeader;
             using (StreamReader reader = new StreamReader(_profile.FileDetails.FilePath))
@@ -135,30 +155,8 @@ namespace CsvObjectify
                 }
             }
         }
-
-        private string Unescape(ReadOnlySpan<char> data)
-        {
-            if (data.Length > 1 && data[0] == '"' && data[^1] == '"')
-                data = data.Slice(1, data.Length - 2);
-
-            StringBuilder stringBuilder = new StringBuilder();
-            for(int counter = 0; counter < data.Length; counter++)
-            {
-                if (data[counter] == '"' && counter + 1 < data.Length && data[counter + 1] == '"')
-                {
-                    stringBuilder.Append('"');
-                    counter++;
-                }
-                else
-                {
-                    stringBuilder.Append(data[counter]);
-                }
-            }
-            return stringBuilder.ToString();
-        }
-
-
-        public IEnumerable<T> ParseWithoutSpan()
+        
+        private IEnumerable<T> ParseWithoutSpan()
         {
             bool ignoreFirstLine = _profile.FileDetails.IsFirstRowHeader;
             using (TextFieldParser reader = new TextFieldParser(_profile.FileDetails.FilePath))
