@@ -9,6 +9,7 @@ namespace CsvObjectify
     {
         private SortedDictionary<int, Mappings> _mappings;
         private CsvProfile _profile;
+        private static readonly char DBL_QUOTE = '"';
         private CsvParser() { }
         private CsvParser(SortedDictionary<int, Mappings> mappings, CsvProfile csvProfile)
         {
@@ -62,15 +63,15 @@ namespace CsvObjectify
 
         private string Unescape(ReadOnlySpan<char> data)
         {
-            if (data.Length > 1 && data[0] == '"' && data[^1] == '"')
+            if (data.Length > 1 && data[0] == DBL_QUOTE && data[^1] == DBL_QUOTE)
                 data = data.Slice(1, data.Length - 2);
 
             StringBuilder stringBuilder = new StringBuilder();
             for (int counter = 0; counter < data.Length; counter++)
             {
-                if (data[counter] == '"' && counter + 1 < data.Length && data[counter + 1] == '"')
+                if (data[counter] == DBL_QUOTE && counter + 1 < data.Length && data[counter + 1] == DBL_QUOTE)
                 {
-                    stringBuilder.Append('"');
+                    stringBuilder.Append(DBL_QUOTE);
                     counter++;
                 }
                 else
