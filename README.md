@@ -1,10 +1,21 @@
 # CsvObjectify
 
-This is a simple c# .net 6 library to convert given csv file to an enumerable of user-defined type (UDT). 
+This is a simple c# .NET 10 library to convert given csv file to an enumerable of user-defined type (UDT). 
 Each cell value in csv is parsed to be saved to a property in UDT. 
 Simple parsing like int, string are baked into the library.
 
-# Working
+## Version 2.0.0.0
+
+This version introduces significant performance improvements:
+- **Span-based parsing**: The parser now uses `ReadOnlySpan<char>` for zero-allocation string processing
+- **Improved performance**: The new implementation delivers better throughput compared to the previous version
+- **.NET 10 support**: Updated to target .NET 10 for the latest framework features and optimizations
+
+The previous version used `ParseWithoutSpan` which relied on the `TextFieldParser` library. Version 2.0.0.0 now uses `ParseWithSpan` as the default parsing method, providing enhanced performance through modern memory-efficient techniques.
+
+# Usage
+
+## Define Column Mappings
 Create Columns defn specifying type for each column of interest in the csv file.
 
 	new ColumnDefinition<string>("Middle Name", s => s.Trim(), "MiddleName"),
