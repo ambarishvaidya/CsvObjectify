@@ -97,7 +97,7 @@ namespace TestCsvObjectify
             {
                 FilePath = employeeWithHeaderPath,
                 IsFirstRowHeader = false,
-                Delimiter = "#"
+                Delimiter = '#'
             });
             ICsvParser<Employee> csvParser = CsvParser<Employee>.Build(employeeProfile);
             Employee employee = csvParser.Parse().First();
@@ -134,7 +134,7 @@ namespace TestCsvObjectify
                 {
                     FilePath = employeeWithHeaderPath,
                     IsFirstRowHeader = false,
-                    Delimiter = "#"
+                    Delimiter = '#'
                 });
             ICsvParser<Employee> csvParser = CsvParser<Employee>.Build(employeeProfile);
             bool hasEmployee = false;
@@ -180,7 +180,7 @@ namespace TestCsvObjectify
                 {
                     FilePath = employeeWithHeaderPath,
                     IsFirstRowHeader = false,
-                    Delimiter = "#"
+                    Delimiter = '#'
                 });
             ICsvParser<Employee> csvParser = CsvParser<Employee>.Build(employeeProfile);
             bool hasEmployee = false;
@@ -225,7 +225,7 @@ namespace TestCsvObjectify
                 {
                     FilePath = employeeWithHeaderPath,
                     IsFirstRowHeader = false,
-                    Delimiter = "#"
+                    Delimiter = '#'
                 });
             ICsvParser<Employee> csvParser = CsvParser<Employee>.Build(employeeProfile);
             bool hasEmployee = false;
@@ -270,7 +270,7 @@ namespace TestCsvObjectify
                 {
                     FilePath = employeeWithHeaderPath,
                     IsFirstRowHeader = false,
-                    Delimiter = "#"
+                    Delimiter = '#'
                 });
             ICsvParser<Employee> csvParser = CsvParser<Employee>.Build(employeeProfile);
             bool hasEmployee = false;

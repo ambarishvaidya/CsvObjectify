@@ -64,7 +64,7 @@ namespace CsvObjectify
             bool ignoreFirstLine = _profile.FileDetails.IsFirstRowHeader;
             using (TextFieldParser reader = new TextFieldParser(_profile.FileDetails.FilePath))
             {
-                reader.Delimiters = new string[] { _profile.FileDetails.Delimiter };
+                reader.Delimiters = new string[] { _profile.FileDetails.Delimiter.ToString() };
                 reader.HasFieldsEnclosedInQuotes = true;
 
                 if (ignoreFirstLine)

@@ -6,7 +6,7 @@ namespace CsvObjectify
     public class FileDetails
     {
         public string FilePath { get; set; }
-        public string Delimiter { get; set; } = ",";
+        public char Delimiter { get; set; } = ',';
         public bool IsFirstRowHeader { get; set; }
 
         public override string ToString()
