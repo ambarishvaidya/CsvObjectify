@@ -1,0 +1,6 @@
+﻿
+Existing Benchmark before code moved to to use Span.
+
+|               Method |    Mean |    Error |   StdDev |        Gen0 |        Gen1 |      Gen2 | Allocated |
+|--------------------- |--------:|---------:|---------:|------------:|------------:|----------:|----------:|
+| ReadResidentParallel | 1.045 s | 0.0132 s | 0.0123 s | 402000.0000 | 103000.0000 | 6000.0000 |   4.55 GB |

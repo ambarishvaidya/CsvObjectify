@@ -6,10 +6,10 @@ namespace CsvObjectify
 {
     public class CsvParser<T> : ICsvParser<T> where T : class, new()
     {
-        private Dictionary<int, Mappings> _mappings;
+        private SortedDictionary<int, Mappings> _mappings;
         private CsvProfile _profile;
         private CsvParser() { }
-        private CsvParser(Dictionary<int, Mappings> mappings, CsvProfile csvProfile)
+        private CsvParser(SortedDictionary<int, Mappings> mappings, CsvProfile csvProfile)
         {
             _mappings = mappings;
             _profile = csvProfile;
@@ -24,9 +24,9 @@ namespace CsvObjectify
             return new CsvParser<T>(dictionaryMappings, profile);
         }
 
-        private static Dictionary<int, Mappings> BuildMappings(CsvProfile profile)
+        private static SortedDictionary<int, Mappings> BuildMappings(CsvProfile profile)
         {
-            var dictMapping = new Dictionary<int, Mappings>();
+            var dictMapping = new SortedDictionary<int, Mappings>();
 
             var tObj = new T();
             PropertyInfo[] tProperties = tObj.GetType().GetProperties();
@@ -58,7 +58,7 @@ namespace CsvObjectify
 
             return dictMapping;
         }
-
+                
         public IEnumerable<T> Parse()
         {
             bool ignoreFirstLine = _profile.FileDetails.IsFirstRowHeader;
