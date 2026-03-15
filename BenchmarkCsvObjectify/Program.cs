@@ -18,7 +18,7 @@ namespace BenchmarkCsvObjectify
             ////new ResidentBenchmark();
             //BenchmarkRunner.Run<ResidentBenchmark>();
 
-            CreateCsvs(10);
+            CreateCsvs(1000000);
             //new ResidentBenchmark();
             BenchmarkRunner.Run<ResidentBenchmark>();            
         }
