@@ -109,30 +109,11 @@ namespace CsvObjectify
                             sliceFrom = kvp.Key - 1;
 
                             bool quotedData = false;
-
-                            while (indexCounter != sliceFrom)
-                            {
-                                if (lineData[counter] == '"')
-                                {
-                                    quotedData = !quotedData;
-                                }
-                                if (lineData[counter] == _profile.FileDetails.Delimiter && !quotedData)
-                                    indexCounter++;
-                                counter++;
-                            }
+                            ParseForSliceIndex(lineData, sliceFrom, ref counter, ref indexCounter, ref quotedData);
                             sliceFrom = counter - 1;
 
                             quotedData = false;
-                            while (indexCounter != sliceTo)
-                            {
-                                if (lineData[counter] == '"')
-                                {
-                                    quotedData = !quotedData;
-                                }
-                                if (lineData[counter] == _profile.FileDetails.Delimiter && !quotedData)
-                                    indexCounter++;
-                                counter++;
-                            }
+                            ParseForSliceIndex(lineData, sliceTo, ref counter, ref indexCounter, ref quotedData);                            
                             sliceTo = counter - 1;
 
                             var dataspan = sliceFrom < 0 ? lineData.Slice(0, sliceTo) : lineData.Slice(sliceFrom + 1, sliceTo - sliceFrom - 1);
@@ -152,6 +133,20 @@ namespace CsvObjectify
                     
                     yield return tObj;
 
+                }
+            }
+
+            void ParseForSliceIndex(ReadOnlySpan<char> lineData, int sliceIndex, ref int counter, ref int indexCounter, ref bool quotedData)
+            {
+                while (indexCounter != sliceIndex)
+                {
+                    if (lineData[counter] == DBL_QUOTE)
+                    {
+                        quotedData = !quotedData;
+                    }
+                    if (lineData[counter] == _profile.FileDetails.Delimiter && !quotedData)
+                        indexCounter++;
+                    counter++;
                 }
             }
         }
