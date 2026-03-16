@@ -287,6 +287,316 @@ namespace TestCsvObjectify
             else
                 Assert.IsTrue(hasEmployee);
         }
+
+        [TestCase("John", "", "Doe", 20, "123 Main Street, Apt 4B, City")]
+        [TestCase("Jane", "", "Smith", 22, "456 Elm Avenue, Unit 8, Town")]
+        [TestCase("Michael", "Allen", "Johnson", 21, "789 Oak Lane, Suite 12, Village")]
+        [TestCase("Sarah", "", "Williams", 19, "321 Pine Road, Building 5, County")]
+        [TestCase("Robert", "James", "Davis", 23, @"987 Mulberry Court, ""Apt 3C"", Borough")]
+        public void Parse_WithNoTrailingDelimiterHashDelimited_ParsesLastFieldCorrectly(
+            string firstname, string middlename, string lastname, int age, string address)
+        {
+            Employee record = new Employee()
+            {
+                FirstName = firstname,
+                MiddleName = middlename,
+                LastName = lastname,
+                Age = age,
+                Address = address
+            };
+
+            var employeeFilePath = @".\TestFiles\EmployeeNoTrailingDelimiter.csv";
+            var employeeColumnMetadata = new ColumnMetadata[]
+            {
+                ColumnDefinitionHelper.CreateStringColumn(0, "FirstName"),
+                ColumnDefinitionHelper.CreateStringColumn(1, "MiddleName"),
+                ColumnDefinitionHelper.CreateStringColumn(2, "LastName"),
+                ColumnDefinitionHelper.CreateIntColumn(3, "Age"),
+                ColumnDefinitionHelper.CreateStringColumn(4, "Address"),
+            };
+            var employeeProfile = CsvProfile.Build(employeeColumnMetadata,
+                new FileDetails()
+                {
+                    FilePath = employeeFilePath,
+                    IsFirstRowHeader = false,
+                    Delimiter = '#'
+                });
+            ICsvParser<Employee> csvParser = CsvParser<Employee>.Build(employeeProfile);
+            bool hasEmployee = false;
+            foreach (Employee employee in csvParser.Parse())
+            {
+                if (employee.Equals(record))
+                {
+                    hasEmployee = true;
+                    break;
+                }
+            }
+            Assert.IsTrue(hasEmployee, $"Employee {firstname} {lastname} with address '{address}' should be found");
+        }
+
+        [TestCase("John", "", "Doe", 20, "123 Main Street, Apt 4B, City")]
+        [TestCase("Jane", "", "Smith", 22, "456 Elm Avenue, Unit 8, Town")]
+        [TestCase("Michael", "Allen", "Johnson", 21, "789 Oak Lane, Suite 12, Village")]
+        [TestCase("Sarah", "", "Williams", 19, "321 Pine Road, Building 5, County")]
+        [TestCase("Robert", "James", "Davis", 23, @"987 Mulberry Court, ""Apt 3C"", Borough")]
+        public void Parse_WithNoTrailingDelimiterCommaDelimited_ParsesLastFieldCorrectly(
+            string firstname, string middlename, string lastname, int age, string address)
+        {
+            Employee record = new Employee()
+            {
+                FirstName = firstname,
+                MiddleName = middlename,
+                LastName = lastname,
+                Age = age,
+                Address = address
+            };
+
+            var employeeFilePath = @".\TestFiles\EmployeeWithHeaderNoTrailingDelimiter.csv";
+            var employeeColumnMetadata = new ColumnMetadata[]
+            {
+                ColumnDefinitionHelper.CreateStringColumn("First Name", "FirstName"),
+                ColumnDefinitionHelper.CreateStringColumn("Middle Name", "MiddleName"),
+                ColumnDefinitionHelper.CreateStringColumn("Last Name", "LastName"),
+                ColumnDefinitionHelper.CreateIntColumn("Age", "Age"),
+                ColumnDefinitionHelper.CreateStringColumn("Address", "Address"),
+            };
+            var employeeProfile = CsvProfile.Build(employeeColumnMetadata,
+                new FileDetails()
+                {
+                    FilePath = employeeFilePath,
+                    IsFirstRowHeader = true,
+                    Delimiter = ','
+                });
+            ICsvParser<Employee> csvParser = CsvParser<Employee>.Build(employeeProfile);
+            bool hasEmployee = false;
+            foreach (Employee employee in csvParser.Parse())
+            {
+                if (employee.Equals(record))
+                {
+                    hasEmployee = true;
+                    break;
+                }
+            }
+            Assert.IsTrue(hasEmployee, $"Employee {firstname} {lastname} with address '{address}' should be found");
+        }
+
+        [Test]
+        public void Parse_WithNoTrailingDelimiter_ParsesAllRecordsCorrectly()
+        {
+            var employeeFilePath = @".\TestFiles\EmployeeNoTrailingDelimiter.csv";
+            var employeeColumnMetadata = new ColumnMetadata[]
+            {
+                ColumnDefinitionHelper.CreateStringColumn(0, "FirstName"),
+                ColumnDefinitionHelper.CreateStringColumn(1, "MiddleName"),
+                ColumnDefinitionHelper.CreateStringColumn(2, "LastName"),
+                ColumnDefinitionHelper.CreateIntColumn(3, "Age"),
+                ColumnDefinitionHelper.CreateStringColumn(4, "Address"),
+            };
+            var employeeProfile = CsvProfile.Build(employeeColumnMetadata,
+                new FileDetails()
+                {
+                    FilePath = employeeFilePath,
+                    IsFirstRowHeader = false,
+                    Delimiter = '#'
+                });
+            ICsvParser<Employee> csvParser = CsvParser<Employee>.Build(employeeProfile);
+
+            List<Employee> employees = csvParser.Parse().ToList();
+
+            Assert.That(employees.Count, Is.EqualTo(5), "Should parse all 5 records");
+            Assert.That(employees[0].Address, Is.EqualTo("123 Main Street, Apt 4B, City"));
+            Assert.That(employees[4].Address, Is.EqualTo(@"987 Mulberry Court, ""Apt 3C"", Borough"));
+        }
+
+        [Test]
+        public void Parse_WithNoTrailingDelimiterAndQuotedLastField_ParsesCorrectly()
+        {
+            var employeeFilePath = @".\TestFiles\EmployeeNoTrailingDelimiter.csv";
+            var employeeColumnMetadata = new ColumnMetadata[]
+            {
+                ColumnDefinitionHelper.CreateStringColumn(0, "FirstName"),
+                ColumnDefinitionHelper.CreateStringColumn(1, "MiddleName"),
+                ColumnDefinitionHelper.CreateStringColumn(2, "LastName"),
+                ColumnDefinitionHelper.CreateIntColumn(3, "Age"),
+                ColumnDefinitionHelper.CreateStringColumn(4, "Address"),
+            };
+            var employeeProfile = CsvProfile.Build(employeeColumnMetadata,
+                new FileDetails()
+                {
+                    FilePath = employeeFilePath,
+                    IsFirstRowHeader = false,
+                    Delimiter = '#'
+                });
+            ICsvParser<Employee> csvParser = CsvParser<Employee>.Build(employeeProfile);
+
+            var employees = csvParser.Parse().ToList();
+            var michaelRecord = employees.FirstOrDefault(e => e.FirstName == "Michael");
+
+            Assert.IsNotNull(michaelRecord, "Michael's record should be found");
+            Assert.That(michaelRecord.Address, Is.EqualTo("789 Oak Lane, Suite 12, Village"), "Quoted last field should be unescaped correctly");
+        }
+
+        [TestCase("John", "", "Doe", 20, "123 Main Street, Apt 4B, City")]
+        [TestCase("Jane", "", "Smith", 22, "456 Elm Avenue, Unit 8, Town")]
+        [TestCase("Michael", "Allen", "Johnson", 21, "789 Oak Lane, Suite 12, Village")]
+        [TestCase("Sarah", "", "Williams", 19, "321 Pine Road, Building 5, County")]
+        [TestCase("Robert", "James", "Davis", 23, @"987 Mulberry Court, ""Apt 3C"", Borough")]
+        public void Parse_WithTrailingDelimiterHashDelimited_ParsesLastFieldCorrectly(
+            string firstname, string middlename, string lastname, int age, string address)
+        {
+            Employee record = new Employee()
+            {
+                FirstName = firstname,
+                MiddleName = middlename,
+                LastName = lastname,
+                Age = age,
+                Address = address
+            };
+
+            var employeeFilePath = @".\TestFiles\EmployeeWithTrailingDelimiter.csv";
+            var employeeColumnMetadata = new ColumnMetadata[]
+            {
+                ColumnDefinitionHelper.CreateStringColumn(0, "FirstName"),
+                ColumnDefinitionHelper.CreateStringColumn(1, "MiddleName"),
+                ColumnDefinitionHelper.CreateStringColumn(2, "LastName"),
+                ColumnDefinitionHelper.CreateIntColumn(3, "Age"),
+                ColumnDefinitionHelper.CreateStringColumn(4, "Address"),
+            };
+            var employeeProfile = CsvProfile.Build(employeeColumnMetadata,
+                new FileDetails()
+                {
+                    FilePath = employeeFilePath,
+                    IsFirstRowHeader = false,
+                    Delimiter = '#'
+                });
+            ICsvParser<Employee> csvParser = CsvParser<Employee>.Build(employeeProfile);
+            bool hasEmployee = false;
+            foreach (Employee employee in csvParser.Parse())
+            {
+                if (employee.Equals(record))
+                {
+                    hasEmployee = true;
+                    break;
+                }
+            }
+            Assert.IsTrue(hasEmployee, $"Employee {firstname} {lastname} with address '{address}' should be found");
+        }
+
+        [TestCase("John", "", "Doe", 20, "123 Main Street, Apt 4B, City")]
+        [TestCase("Jane", "", "Smith", 22, "456 Elm Avenue, Unit 8, Town")]
+        [TestCase("Michael", "Allen", "Johnson", 21, "789 Oak Lane, Suite 12, Village")]
+        [TestCase("Sarah", "", "Williams", 19, "321 Pine Road, Building 5, County")]
+        [TestCase("Robert", "James", "Davis", 23, @"987 Mulberry Court, ""Apt 3C"", Borough")]
+        public void Parse_WithTrailingDelimiterCommaDelimited_ParsesLastFieldCorrectly(
+            string firstname, string middlename, string lastname, int age, string address)
+        {
+            Employee record = new Employee()
+            {
+                FirstName = firstname,
+                MiddleName = middlename,
+                LastName = lastname,
+                Age = age,
+                Address = address
+            };
+
+            var employeeFilePath = @".\TestFiles\EmployeeWithHeaderWithTrailingDelimiter.csv";
+            var employeeColumnMetadata = new ColumnMetadata[]
+            {
+                ColumnDefinitionHelper.CreateStringColumn("First Name", "FirstName"),
+                ColumnDefinitionHelper.CreateStringColumn("Middle Name", "MiddleName"),
+                ColumnDefinitionHelper.CreateStringColumn("Last Name", "LastName"),
+                ColumnDefinitionHelper.CreateIntColumn("Age", "Age"),
+                ColumnDefinitionHelper.CreateStringColumn("Address", "Address"),
+            };
+            var employeeProfile = CsvProfile.Build(employeeColumnMetadata,
+                new FileDetails()
+                {
+                    FilePath = employeeFilePath,
+                    IsFirstRowHeader = true,
+                    Delimiter = ','
+                });
+            ICsvParser<Employee> csvParser = CsvParser<Employee>.Build(employeeProfile);
+            bool hasEmployee = false;
+            foreach (Employee employee in csvParser.Parse())
+            {
+                if (employee.Equals(record))
+                {
+                    hasEmployee = true;
+                    break;
+                }
+            }
+            Assert.IsTrue(hasEmployee, $"Employee {firstname} {lastname} with address '{address}' should be found");
+        }
+
+        [Test]
+        public void Parse_WithTrailingDelimiter_ParsesAllRecordsCorrectly()
+        {
+            var employeeFilePath = @".\TestFiles\EmployeeWithTrailingDelimiter.csv";
+            var employeeColumnMetadata = new ColumnMetadata[]
+            {
+                ColumnDefinitionHelper.CreateStringColumn(0, "FirstName"),
+                ColumnDefinitionHelper.CreateStringColumn(1, "MiddleName"),
+                ColumnDefinitionHelper.CreateStringColumn(2, "LastName"),
+                ColumnDefinitionHelper.CreateIntColumn(3, "Age"),
+                ColumnDefinitionHelper.CreateStringColumn(4, "Address"),
+            };
+            var employeeProfile = CsvProfile.Build(employeeColumnMetadata,
+                new FileDetails()
+                {
+                    FilePath = employeeFilePath,
+                    IsFirstRowHeader = false,
+                    Delimiter = '#'
+                });
+            ICsvParser<Employee> csvParser = CsvParser<Employee>.Build(employeeProfile);
+
+            List<Employee> employees = csvParser.Parse().ToList();
+
+            Assert.That(employees.Count, Is.EqualTo(5), "Should parse all 5 records");
+            Assert.That(employees[0].Address, Is.EqualTo("123 Main Street, Apt 4B, City"));
+            Assert.That(employees[4].Address, Is.EqualTo(@"987 Mulberry Court, ""Apt 3C"", Borough"));
+        }
+
+        [Test]
+        public void Parse_ComparingTrailingVsNoTrailingDelimiter_ProducesSameResults()
+        {
+            var employeeColumnMetadata = new ColumnMetadata[]
+            {
+                ColumnDefinitionHelper.CreateStringColumn(0, "FirstName"),
+                ColumnDefinitionHelper.CreateStringColumn(1, "MiddleName"),
+                ColumnDefinitionHelper.CreateStringColumn(2, "LastName"),
+                ColumnDefinitionHelper.CreateIntColumn(3, "Age"),
+                ColumnDefinitionHelper.CreateStringColumn(4, "Address"),
+            };
+
+            var profileWithTrailing = CsvProfile.Build(employeeColumnMetadata,
+                new FileDetails()
+                {
+                    FilePath = @".\TestFiles\EmployeeWithTrailingDelimiter.csv",
+                    IsFirstRowHeader = false,
+                    Delimiter = '#'
+                });
+            var profileNoTrailing = CsvProfile.Build(employeeColumnMetadata,
+                new FileDetails()
+                {
+                    FilePath = @".\TestFiles\EmployeeNoTrailingDelimiter.csv",
+                    IsFirstRowHeader = false,
+                    Delimiter = '#'
+                });
+
+            ICsvParser<Employee> parserWithTrailing = CsvParser<Employee>.Build(profileWithTrailing);
+            ICsvParser<Employee> parserNoTrailing = CsvParser<Employee>.Build(profileNoTrailing);
+
+            var employeesWithTrailing = parserWithTrailing.Parse().ToList();
+            var employeesNoTrailing = parserNoTrailing.Parse().ToList();
+
+            Assert.That(employeesWithTrailing.Count, Is.EqualTo(employeesNoTrailing.Count), "Both should parse same number of records");
+
+            for (int i = 0; i < employeesWithTrailing.Count; i++)
+            {
+                Assert.That(employeesWithTrailing[i], Is.EqualTo(employeesNoTrailing[i]), 
+                    $"Record {i} should be identical regardless of trailing delimiter");
+            }
+        }
     }
 
     public class Student
