@@ -61,18 +61,18 @@ namespace BenchmarkCsvObjectify
             Console.WriteLine($"Total of {residents.Count} in the file.");
         }
 
-        //[Benchmark]
-        //public void ParseWithoutSpan()
-        //{
-        //    List<Resident> residents = [.. _residentParser.ParseWithoutSpan()];
-        //    Console.WriteLine($"Total of {residents.Count} in the file.");
-        //}
+        [Benchmark]
+        public void ParseWithoutSpan()
+        {
+            List<Resident> residents = [.. _residentParser.ParseWithoutSpan()];
+            Console.WriteLine($"Total of {residents.Count} in the file.");
+        }
 
-        //[Benchmark]
-        //public void ParseWithSpan()
-        //{
-        //    List<Resident> residents = [.. _residentParser.ParseWithSpan()];
-        //    Console.WriteLine($"Total of {residents.Count} in the file.");
-        //}
+        [Benchmark]
+        public void ParseWithSpan()
+        {
+            List<Resident> residents = [.. _residentParser.ParseWithSpan()];
+            Console.WriteLine($"Total of {residents.Count} in the file.");
+        }
     }
 }

@@ -84,7 +84,7 @@ namespace CsvObjectify
 
         public IEnumerable<T> Parse() => ParseWithSpan();
         
-        private IEnumerable<T> ParseWithSpan()
+        public IEnumerable<T> ParseWithSpan()
         {
             bool ignoreFirstLine = _profile.FileDetails.IsFirstRowHeader;
             using (StreamReader reader = new StreamReader(_profile.FileDetails.FilePath))
@@ -161,7 +161,7 @@ namespace CsvObjectify
             }
         }
         
-        private IEnumerable<T> ParseWithoutSpan()
+        public IEnumerable<T> ParseWithoutSpan()
         {
             bool ignoreFirstLine = _profile.FileDetails.IsFirstRowHeader;
             using (TextFieldParser reader = new TextFieldParser(_profile.FileDetails.FilePath))
