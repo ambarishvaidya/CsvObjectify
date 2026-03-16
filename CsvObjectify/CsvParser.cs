@@ -141,6 +141,15 @@ namespace CsvObjectify
             {
                 while (indexCounter != sliceIndex)
                 {
+                    // In case of a line that does not have a tailing delimiter, we need to break out of the loop
+                    // when counter reaches lineData.Length           
+                    if (counter >= lineData.Length)
+                    {
+                        // The las column data will be till the end of line
+                        counter++;
+                        break;
+                    }
+
                     if (lineData[counter] == DBL_QUOTE)
                     {
                         quotedData = !quotedData;
